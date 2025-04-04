@@ -3,47 +3,81 @@ package com.nouhoun.springboot.jwt.integration.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by nydiarra on 06/05/17.
- */
+
 @Entity
-@Table(name = "app_user")
+@Table(name = "USER")
 @Getter
 @Setter
 public class User {
-    @Id
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", length = 50, unique = true)
+	@NotNull
+    @Size(min = 4, max = 50)
     private String username;
 
-    @Column(name = "password")
+	@NotEmpty
     @JsonIgnore
     private String password;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", length = 50)
+    @Size(min = 4, max = 50)
+	@NotNull
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name", length = 50)
+    @Size(min = 4, max = 50)
+	@NotNull
     private String lastName;
 
-    /**
-     * Roles are being eagerly loaded here because
-     * they are a fairly small collection of items for this example.
-     */
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role", joinColumns
-            = @JoinColumn(name = "user_id",
-            referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id",
-                    referencedColumnName = "id"))
-    private List<Role> roles;
-}
 
+    @Column(name = "email", length = 50)
+	@NotNull
+	@Email
+    private String email;
+
+    @Column(name = "enabled")
+    @NotNull
+    private Boolean enabled;
+
+    @Column(name = "lastpasswordresetdate")
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    private java.util.Date lastPasswordResetDate;
+
+
+
+	@ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "USER_AUTHORITY",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_id", referencedColumnName = "id")})
+
+	@JsonIgnore
+    private List<Authority> authorities = new ArrayList<>();
+
+	public List<GrantedAuthority> getGrantedAuthorities(){
+		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+		for (Authority authority : authorities){
+			grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+		}
+
+		return grantedAuthorities;
+	}
+
+
+}
