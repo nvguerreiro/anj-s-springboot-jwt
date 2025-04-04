@@ -26,7 +26,7 @@
 	    <tomcat.ip>127.0.0.1</tomcat.ip>
 	    <file>readme</file>
 		<lombok.version>1.18.26</lombok.version>
-		<spring-security-oauth2.version>2.5.2</spring-security-oauth2.version>
+		<spring-security-oauth2.version>5.5.8</spring-security-oauth2.version>
 	</properties>
 
 	<dependencies>
