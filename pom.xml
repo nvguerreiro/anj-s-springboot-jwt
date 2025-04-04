@@ -29,6 +29,13 @@
 		<spring-security-oauth2.version>2.1.0.RELEASE</spring-security-oauth2.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>fabric8-maven-repository</id>
+			<url>https://maven.fabric8.io/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
